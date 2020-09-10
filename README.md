@@ -1,6 +1,8 @@
 # Learning
 
-https://github.com/hi-ogawa/blog/blob/master/src/posts/2017-03-03-blink-overview--vol-3-.md
+Key calling sequence: https://github.com/hi-ogawa/blog/blob/master/src/posts/2017-03-03-blink-overview--vol-3-.md
+
+Hit Testing intro : http://smnh.me/hit-testing-in-ios/
 
 // RenderView corresponds to the content container of a renderer's subset
 // of the frame tree. A frame tree that spans multiple renderers will have a
