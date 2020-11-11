@@ -4,7 +4,7 @@ Key calling sequence: https://github.com/hi-ogawa/blog/blob/master/src/posts/201
 
 Hit Testing intro : http://smnh.me/hit-testing-in-ios/
 
-Concepts
+## Concepts
 
 Page, Frame, Document, ExecutionContext and DOMWindow are the following concepts:
 
@@ -116,3 +116,7 @@ class SomeObject : public GarbageCollected<SomeObject>, public ContextLifecycleO
 
 
 
+## Scenarios
+. Layout : https://chromium.googlesource.com/chromium/src/+/master/third_party/blink/renderer/core/layout/README.md
+. Element Geometry:  https://docs.google.com/document/d/1WZKlOSUK4XI0Le0fgCsyUTVw0dTwutZXGWwzlHXewiU/preview#
+. Scrolling: https://docs.google.com/presentation/d/1pwx0qBW4wSmYAOJxq2gb3SMvSTCHz2L2TFx_bjsvm8E/preview?slide=id.p
