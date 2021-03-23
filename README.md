@@ -4,6 +4,8 @@ Key calling sequence: https://github.com/hi-ogawa/blog/blob/master/src/posts/201
 
 Hit Testing intro : http://smnh.me/hit-testing-in-ios/
 
+A good explanation of WebGL V.S. WebGPU https://gigazine.net/gsc_news/en/20200427-experimental-webgpu/
+
 ## Concepts
 
 Page, Frame, Document, ExecutionContext and DOMWindow are the following concepts:
