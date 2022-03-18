@@ -125,6 +125,9 @@ class SomeObject : public GarbageCollected<SomeObject>, public ContextLifecycleO
 	
 	
 ## BAClear V.s JEClear
+	
+https://stackoverflow.com/questions/31280817/what-branch-misprediction-does-the-branch-target-buffer-detect/65796517#65796517
+	
 I am currently looking at the various parts of the CPU pipeline which can detect branch mispredictions. I have found these are:
 
 Branch Target Buffer (BPU CLEAR)
