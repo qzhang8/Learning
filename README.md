@@ -122,3 +122,33 @@ class SomeObject : public GarbageCollected<SomeObject>, public ContextLifecycleO
 . Layout : https://chromium.googlesource.com/chromium/src/+/master/third_party/blink/renderer/core/layout/README.md
 . Element Geometry:  https://docs.google.com/document/d/1WZKlOSUK4XI0Le0fgCsyUTVw0dTwutZXGWwzlHXewiU/preview#
 . Scrolling: https://docs.google.com/presentation/d/1pwx0qBW4wSmYAOJxq2gb3SMvSTCHz2L2TFx_bjsvm8E/preview?slide=id.p
+	
+	
+## BAClear V.s JEClear
+I am currently looking at the various parts of the CPU pipeline which can detect branch mispredictions. I have found these are:
+
+Branch Target Buffer (BPU CLEAR)
+Branch Address Calculator (BA CLEAR)
+Jump Execution Unit (not sure of the signal name here??)
+I know what 2 and 3 detect, but I do not understand what misprediction is detected within the BTB. The BAC detects where the BTB has erroneously predicted a branch for a non-branch instruction, where the BTB has failed to detect a branch, or the BTB has mispredicted the target address for a x86 RET instruction. The execution unit evaluates the branch and determines if it was correct.
+
+What type of misprediction is detected at the Branch Target Buffer? What exactly is detected as a misprediction here?
+18
+
+This is a good question! I think the confusion that it's causing is due to Intel's strange naming schemes which often overload terms standard in academia. I will try to both answer your question and also clear up the confusion I see in the comments.
+
+First of all. I agree that in standard computer science terminology a branch target buffer isn't synonymous with branch predictor. However in Intel terminology the Branch Target Buffer (BTB) [in capitals] is something specific and contains both a predictor and a Branch Target Buffer Cache (BTBC) which is just a table of branch instructions and their targets on a taken outcome. This BTBC is what most people understand as a branch target buffer [lower case]. So what is the Branch Address Calculator (BAC) and why do we need it if we have a BTB?
+
+So, you understand that modern processors are split into pipelines with multiple stages. Whether this is a simple pipelined processor or an out of order supersclar processor, the first stages are typically fetch then decode. In the fetch stage all we have is the address of the current instruction contained in the program counter (PC). We use the PC to load bytes from memory and send them to the decode stage. In most cases we increment the PC in order to load the subsequent instruction(s) but in other cases we process a control flow instruction which can modify the contents of the PC completely.
+
+The purpose of the BTB is to guess if the address in the PC points to a branch instruction, and if so, what should the next address in the PC be? That's fine, we can use a predictor for conditional branches and the BTBC for the next address. If the prediction was right, that's great! If the prediction was wrong, what then? If the BTB is the only unit we have then we would have to wait until the branch reaches the issue/execute stage of the pipeline. We would have to flush the pipeline and start again. But not every situation needs to be resolved so late. This is where the Branch Address Calculator (BAC) comes in.
+
+The BTB is used in the fetch stage of the pipeline but the BAC resides in the decode stage. Once the instruction we fetched is decoded, we actually have a lot more information which can be useful. The first new piece of information we know is: "is the instruction I fetched actually a branch?" In the fetch stage we have no idea and the BTB can only guess, but in the decode stage we know it for sure. It is possible that the BTB predicts a branch when in fact the instruction is not a branch; in this case the BAC will halt the fetch unit, fix the BTB, and reinitiate fetching correctly.
+
+What about branches like unconditional relative and call? These can be validated at the decode stage. The BAC will check the BTB, see if there are entries in the BTBC and set the predictor to always predict taken. For conditional branches, the BAC cannot confirm if they are taken/not-taken yet, but it can at least validate the predicted address and correct the BTB in the event of a bad address prediction. Sometimes the BTB won't identify/predict a branch at all. The BAC needs to correct this and give the BTB new information about this instruction. Since the BAC doesn't have a conditional predictor of its own, it uses a simple mechanism (backwards branches taken, forward branches not taken).
+
+Somebody will need to confirm my understanding of these hardware counters, but I believe they mean the following:
+
+BACLEAR.CLEAR is incremented when the BTB in fetch does a bad job and the BAC in decode can fix it.
+BPU_CLEARS.EARLY is incremented when fetch decides (incorrectly) to load the next instruction before the BTB predicts that it should actually load from the taken path instead. This is because the BTB requires multiple cycles and fetch uses that time to speculatively load a consecutive block of instructions. This can be due to Intel using two BTBs, one quick and the other slower but more accurate. It takes more cycles to get a better prediction.
+This explains why the penalty of a detecting a misprediction in the BTB is 2/3 cycles whereas the detecting a misprediction in the BAC is 8 cycles.	
