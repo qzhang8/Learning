@@ -155,3 +155,8 @@ Somebody will need to confirm my understanding of these hardware counters, but I
 BACLEAR.CLEAR is incremented when the BTB in fetch does a bad job and the BAC in decode can fix it.
 BPU_CLEARS.EARLY is incremented when fetch decides (incorrectly) to load the next instruction before the BTB predicts that it should actually load from the taken path instead. This is because the BTB requires multiple cycles and fetch uses that time to speculatively load a consecutive block of instructions. This can be due to Intel using two BTBs, one quick and the other slower but more accurate. It takes more cycles to get a better prediction.
 This explains why the penalty of a detecting a misprediction in the BTB is 2/3 cycles whereas the detecting a misprediction in the BAC is 8 cycles.	
+	
+	
+## Cache
+https://stackoverflow.com/questions/4666728/why-is-the-size-of-l1-cache-smaller-than-that-of-the-l2-cache-in-most-of-the-pro/38549736#38549736
+	
