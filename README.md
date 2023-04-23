@@ -178,3 +178,9 @@ https://blog.csdn.net/weixin_38233274/article/details/80179197
 电容器是由两块金属极板，中间隔以绝缘介质（如空气、云母、绝缘纸、电解质等）组成，当电容器的两块金属极板之间加以电压时，两块极板上就会聚集等量异性的电荷（ charge ），从而建立起电场，储存电场能量，当外加电压撤掉后，极板上的电荷可继续存在，因此，电容器是一种能储存电荷的元件。但是，实际的电容器由于存在介质损耗和漏电流，极板上的电荷会慢慢地消失，时间越长，电荷越少
 	
 电容上的电流与电压呈微分关系，即任一时刻电容上的电流取决于该时刻电压的变化率，而与该时刻电压本身无关。电压变化越快，电流也就越大，即使某时刻的电压为 0 ，也可能有电流；如果电容两端电压为直流电压（ DC voltage ），即电压不随时间的变化而变化，那么电容上就无电流通过，这时电容相当于开路，所以，电容具有隔直流作用。	。	
+
+## Attention
+https://web.stanford.edu/class/cs224n/slides/cs224n-2023-lecture08-transformers.pdf
+We can think of attention as performing fuzzy lookup in a key-value store.
+In a lookup table, we have a table of keys that map to values. The query matches one of the keys, returning its value.
+In attention, the query matches all keys softly, to a weight between 0 and 1. The keys’ values are multiplied by the weights and summed.
