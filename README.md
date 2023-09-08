@@ -184,3 +184,5 @@ https://web.stanford.edu/class/cs224n/slides/cs224n-2023-lecture08-transformers.
 We can think of attention as performing fuzzy lookup in a key-value store.
 In a lookup table, we have a table of keys that map to values. The query matches one of the keys, returning its value.
 In attention, the query matches all keys softly, to a weight between 0 and 1. The keys’ values are multiplied by the weights and summed.
+## reparameterization trick
+An excellent illustration here. https://stats.stackexchange.com/questions/199605/how-does-the-reparameterization-trick-for-vaes-work-and-why-is-it-important
