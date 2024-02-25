@@ -18,6 +18,8 @@ So let's start from the Bayesion probability foundations.  Till now, the best te
 The Bayesion probability is to focus on the study of Joint Probability and Conditional Probabibility. Both of them invovle in two or more Random Variables. Joint Probability function maps the possibility of multiple Random Variables assignment results. An example is the possiblity of two person's heights. In normal case, if these two persons are not direct-relatives, their height should be independent to each other.  But if one person is another person's parent or child,  the height of these two persons should have some impact to each other.  Say, if B is the child of A, then probability(height (B)) is conditioned on probability(height (A)), denoated as P(height(B)|height(A)) or short handed into P(B|A).   In general, the Bayesion rule defines the relationship between the probability of two Random Variables:
           P(B|A) = P(A|B)*P(B)/P(A)
  This equation is the result of an easy reasoning:  P(A, B) = P(A)*P(B|A) = P(B)*P(A|B) but all the magics start from this very simple equation.
+
+ Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable. 
  
 
  
