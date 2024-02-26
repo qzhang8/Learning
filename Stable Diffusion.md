@@ -19,7 +19,13 @@ The Bayesion probability is to focus on the study of Joint Probability and Condi
           P(B|A) = P(A|B)*P(B)/P(A)
  This equation is the result of an easy reasoning:  P(A, B) = P(A)*P(B|A) = P(B)*P(A|B) but all the magics start from this very simple equation.
 
- Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable. 
+ Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable and then the whole image is a collection of Random Variables following the same Probability function. In this case, the Random Variables can be represented as a vector of scalar Random Variables.
+
+Similar to other basic and important rules,  each term in this Bayesion equation has a deciated name:
+.  P(B) is called Prior Probablity of B, this is the assumped Probability function of B without any other condition
+.  P(B|A) is called Postier Probability of B,  this is the refined Probability function of B based on the observed Randam Variable A
+.  P(A|B) is called the Likelihood of Random Variable conditioned on Random Variable B
+.  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "whole probability of A". 
  
 
  
