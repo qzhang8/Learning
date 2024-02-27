@@ -27,6 +27,15 @@ Similar to other basic and important rules,  each term in this Bayesion equation
 .  P(A|B) is called the Likelihood of Random Variable conditioned on Random Variable B
 .  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "whole probability of A". 
  
+There is a good example to understand this Bayesion rule. Let's assume for the biological reason, color blind rate among males is higher than color blind rate among females; let's assume male color blind probablity is 7% while female color bind probability is 1%; while for some reason, male population is lower than female in this country, e.g, male is 40% but female is 60%.  Now you hear someone is color blinded,  please infer the probablity of this person's gender.
+
+Based on all these conditions, we can get the following probabilities:
+P(C|M) = 7%;  P(~C|M) = 93%; P(C|F) = 1%; P(~C|F) = 99%; 
+
+We can calculate P(M|C) = P(C|M)*P(M)/P(C); we have P(C|M) and P(M), and in this case we can calculate P(C) = 40%*7%+60%*1% = %3.4;  so P(M|C) = 7%*40%/%3.4 = 82.4%
+
+
+
 
  
 
