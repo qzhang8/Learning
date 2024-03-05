@@ -1,4 +1,4 @@
-This is my learning path for stable diffusion
+## This is my learning path for stable diffusion
 
 To generate a picture based on some text prompts,  there are several problems to be answered
 
@@ -6,7 +6,7 @@ To generate a picture based on some text prompts,  there are several problems to
 2. How to generate a picture? A more basic problem is to generate a new picture based on a model that is learned from a large set of sample pictures, this is resolved using the Diffusion model.
 3. Then the 3rd question is how to generate a piciture that is reflecting the semantics of the text, this is resolved using guided diffusion basically generate a picture "conditioned" on the text.
 
-Diffusion model
+## Diffusion model
 To understand how Diffuion model work, we can first understand a concept called Varariontial Autoencoder, because the Diffusion model's mathematics's logic is very similar to Varational Autoencoder. Remarkably, Varational Autoencoder can be used to "understand" some sample pictures automatically, and then generate a new picture based this "understanding", this is I believe why this process is called "Autoencoder". And the diffusion model can also convert the sample pictures into another representation, and then generate new picitures based on the representation; both Diffusion & VAE utilizes the Bayesian probability model to handle the sample picutures, which is the reason that their arithmetic theory is similar.
 
 So let's start from the Bayesion probability foundations.  Till now, the best text book giving me the best intuation is << A first class to the Machine Learning>>. 
@@ -25,7 +25,7 @@ Similar to other basic and important rules,  each term in this Bayesion equation
 .  P(B) is called Prior Probablity of B, this is the assumped Probability function of B without any other condition
 .  P(B|A) is called Postier Probability of B,  this is the refined Probability function of B based on the observed Randam Variable A
 .  P(A|B) is called the Likelihood of Random Variable conditioned on Random Variable B
-.  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "whole probability of A". 
+.  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "Total probability of A". 
  
 There is a good example to understand this Bayesion rule. Let's assume for the biological reason, color blind rate among males is higher than color blind rate among females; let's assume male color blind probablity is 7% while female color bind probability is 1%; while for some reason, male population is lower than female in this country, e.g, male is 40% but female is 60%.  Now you hear someone is color blinded,  please infer the probablity of this person's gender.
 
