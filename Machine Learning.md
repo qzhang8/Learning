@@ -12,7 +12,7 @@ In attention, the query matches all keys softly, to a weight between 0 and 1. Th
 ## reparameterization trick
 An excellent illustration here. https://stats.stackexchange.com/questions/199605/how-does-the-reparameterization-trick-for-vaes-work-and-why-is-it-important
 
-##Why does modeling a conditional probability mean learning to predict the conditional score function?
+## Why does modeling a conditional probability mean learning to predict the conditional score function?
 When modeling a conditional probability, you're essentially trying to capture the relationship between two events and predict the likelihood of one event (Y) occurring given the other event (X) has already happened. This likelihood is represented by the conditional probability P(Y | X).
 
 However, directly predicting the probability itself might not always be the most efficient or effective approach. Instead, we often rely on a score function, also known as a log-likelihood function. Here's why:
