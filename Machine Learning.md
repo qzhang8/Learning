@@ -2,7 +2,7 @@
 https://blog.evjang.com/2016/08/variational-bayes.html
 This blog provides the very basic introduction to the probability therory for varitional inference needed by understanding Stable Diffusion
 
-##A Short Introduction to Entropy, Cross-Entropy and KL-Divergence
+## A Short Introduction to Entropy, Cross-Entropy and KL-Divergence
 https://www.youtube.com/watch?v=ErfnhcEV1O8
 
 
