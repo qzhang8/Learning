@@ -12,6 +12,7 @@ To understand how Diffuion model work, we can first understand a concept called 
 
 So let's start from the Bayesion probability foundations.  Till now, the best text book giving me the best intuation is << A first class to the Machine Learning>>. 
 
+### Probability ###
 1. Random variables: A variable that can be assigned to different values. And because of this multi-value assignment,  it can't be defined as a function. Please note I am using the word of "assign" instead of "mapping" here because mapping is usually used in the context of function.
 2. Probability:  this is a function mapping the possibility of a Random variable assigned with a specific value. In the case of coin tossling, Random variable X is defined the result of one tossling. Obviously, X's value can be assigned to Head or Tail, so the tossling can't be described using a function, but the possibility of X= Head or X = Tail is defined (given one particular coin), the probability function is defined to map this possibility to a real number between [0, 1].  If the value of X can be assigned to any real number,  this probability function is also called Probability Density function.
 3. There is a specicial category of Proabability Density function:  if the integral of the probility desentify function over all the mapping equals to 1,  these prabiblity Desenstion function is called Probability Distribution function (PDF). So the implication here is that not all Probablity Density function is integrated into 1. 
@@ -20,7 +21,7 @@ The Bayesion probability is to focus on the study of Joint Probability and Condi
           P(B|A) = P(A|B)*P(B)/P(A)
  This equation is the result of an easy reasoning:  P(A, B) = P(A)*P(B|A) = P(B)*P(A|B) but all the magics start from this very simple equation.
 
- Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable and then the whole image is a collection of Random Variables following the same Probability function. In this case, the Random Variables can be represented as a vector of scalar Random Variables.
+ Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable and then the whole image is a collection of Random Variables following the same Probability distribution function. In this case, the Random Variables can be represented as a vector of scalar Random Variables.
 
 Similar to other basic and important rules,  each term in this Bayesion equation has a deciated name:
 .  P(B) is called Prior Probablity of B, this is the assumped Probability function of B without any other condition
@@ -30,10 +31,23 @@ Similar to other basic and important rules,  each term in this Bayesion equation
  
 There is a good example to understand this Bayesion rule. Let's assume for the biological reason, color blind rate among males is higher than color blind rate among females; let's assume male color blind probablity is 7% while female color bind probability is 1%; while for some reason, male population is lower than female in this country, e.g, male is 40% but female is 60%.  Now you hear someone is color blinded,  please infer the probablity of this person's gender.
 
-Based on all these conditions, we can get the following probabilities:
+Based on all these c onditions, we can get the following probabilities:
 P(C|M) = 7%;  P(~C|M) = 93%; P(C|F) = 1%; P(~C|F) = 99%; 
 
-We can calculate P(M|C) = P(C|M)*P(M)/P(C); we have P(C|M) and P(M), and in this case we can calculate P(C) = 40%*7%+60%*1% = %3.4;  so P(M|C) = 7%*40%/%3.4 = 82.4%
+We can calculate P(M|C) = P(C|M)*P(M)/P(C); we have P(C|M) and P(M), and in this case we can calculate P(C) = 40%*7%+60%*1% = %3.4;  so P(M|C) = 7%*40%/%3.4 = 82.4%.  In this case,  intuatively,  the possibility that one color blinded person is male should be 7X of that person is female (as P(C|M) = 7%; P(C/F) = 1%)), the possiblity of should be 7/8 = 87.5%, in reality the probabilty is lower because P(M) is only 40% of the total population.
+
+### Expectation ###
+
+https://borisburkov.net/2022-12-31-1/
+### KL-Divergence ###
+
+### ELBO maximization ###
+
+### Reparametrization trick ###
+
+
+
+ 
 
 
 
