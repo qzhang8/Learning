@@ -24,10 +24,10 @@ The Bayesion probability is to focus on the study of Joint Probability and Condi
  Let's assume Random Variables A and B are dependent to each other, but B is the Random Variable (data) that we can observe/measure while A is a hidden Random Variable that is unknown to us. A typical scenario to this B is the Coin Tossiling Variable while A denotes the Random Variable that the Coin is two sides equally weighted. In the context of VAE or Stable Diffusion,  one can treat each pixel in the picture as a Random Variable and then the whole image is a collection of Random Variables following the same Probability distribution function. In this case, the Random Variables can be represented as a vector of scalar Random Variables.
 
 Similar to other basic and important rules,  each term in this Bayesion equation has a deciated name:
-.  P(B) is called Prior Probablity of B, this is the assumped Probability function of B without any other condition
-.  P(B|A) is called Postier Probability of B,  this is the refined Probability function of B based on the observed Randam Variable A
-.  P(A|B) is called the Likelihood of Random Variable conditioned on Random Variable B
-.  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "Total probability of A". 
+  P(B) is called Prior Probablity of B, this is the assumped Probability function of B without any other condition
+  P(B|A) is called Postier Probability of B,  this is the refined Probability function of B based on the observed Randam Variable A
+  P(A|B) is called the Likelihood of Random Variable conditioned on Random Variable B, meaning how likely event A will happen with the current setting of      event B.
+  P(A) is called Marginal Likelihood; in the discrete scenario,  this is also called "Total probability of A". 
  
 There is a good example to understand this Bayesion rule. Let's assume for the biological reason, color blind rate among males is higher than color blind rate among females; let's assume male color blind probablity is 7% while female color bind probability is 1%; while for some reason, male population is lower than female in this country, e.g, male is 40% but female is 60%.  Now you hear someone is color blinded,  please infer the probablity of this person's gender.
 
