@@ -57,6 +57,16 @@ https://lilianweng.github.io/posts/2018-08-12-vae/#loss-function-elbo
 ## VAE:  reparameterization trick ##
 https://lilianweng.github.io/posts/2018-08-12-vae/#reparameterization-trick
 
+## from VAE to Hierarchical Variational Autoencoders to Variational Diffusion Models ##
+
+https://arxiv.org/pdf/2208.11970
+
+## from VDM to Score-based Generative Models ##
+
+https://arxiv.org/pdf/2208.11970
+
+## from Score-based Generative Models to Stable Diffusion ##
+
 
 
 
