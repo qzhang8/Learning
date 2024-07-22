@@ -45,6 +45,19 @@ https://borisburkov.net/2022-12-31-1/
 
 ### Reparametrization trick ###
 
+## Auto Encoder ##
+https://lilianweng.github.io/posts/2018-08-12-vae/#autoencoder
+
+## VAE: Variational Autoencoder ##
+https://lilianweng.github.io/posts/2018-08-12-vae/#vae-variational-autoencoder
+
+## VAE: Loss function ##
+https://lilianweng.github.io/posts/2018-08-12-vae/#loss-function-elbo
+
+## VAE:  reparameterization trick ##
+https://lilianweng.github.io/posts/2018-08-12-vae/#reparameterization-trick
+
+
 
 
  
