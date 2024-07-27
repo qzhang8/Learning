@@ -59,6 +59,8 @@ https://lilianweng.github.io/posts/2018-08-12-vae/#reparameterization-trick
 
 ## VAE CODE ##
 Load and preprocess MNIST data
+
+```python
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train = x_train.astype('float32') / 255.
 x_test = x_test.astype('float32') / 255.
@@ -101,6 +103,7 @@ vae.compile(optimizer='adam', loss=vae_loss)
 Train the VAE model
 vae.fit(x_train, x_train, epochs=10, batch_size=128, validation_data=(x_test, x_test))
 ``
+```python
 
 Explanation:
 
