@@ -39,6 +39,10 @@ We can calculate P(M|C) = P(C|M)*P(M)/P(C); we have P(C|M) and P(M), and in this
 ### Expectation ###
 
 https://borisburkov.net/2022-12-31-1/
+
+### Monte Carlo methods ###
+https://github.com/zsdonghao/deep-learning-book/blob/master/Split-pdf/Part%20III-%2017%20Monte%20Carlo%20Methods.pdf
+
 ### KL-Divergence ###
 
 ### ELBO maximization ###
