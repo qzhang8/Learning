@@ -1,5 +1,5 @@
 ##https://arxiv.org/pdf/2208.11970
-## This is my learning path for stable diffusion
+## This is my learning path for Deep Generative Model
 
 To generate a picture based on some text prompts,  there are several problems to be answered
 
