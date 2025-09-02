@@ -59,5 +59,5 @@ Summary:
 
 While the ultimate goal is to understand and predict the conditional probability P(Y | X), modeling the conditional score function S(Y | X) often proves to be a more efficient and robust approach due to its linear relationship with the probability and improved numerical stability. The score function indirectly encodes the information required to rank and compare different Y values based on their likelihood given X.
 
-Ultra-Wide Deep Nets and the Neural Tangent Kernel (NTK):
+## Ultra-Wide Deep Nets and the Neural Tangent Kernel (NTK):
 https://blog.ml.cmu.edu/2019/10/03/ultra-wide-deep-nets-and-the-neural-tangent-kernel-ntk/
