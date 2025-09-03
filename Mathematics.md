@@ -32,6 +32,7 @@ https://borisburkov.net/2022-12-31-1/
 https://github.com/zsdonghao/deep-learning-book/blob/master/Split-pdf/Part%20III-%2017%20Monte%20Carlo%20Methods.pdf
 
 ### KL-Divergence ###
+##https://arxiv.org/pdf/2208.11970
 
 ## A Beginner's Guide to Variational Methods: Mean-Field Approximation
 https://blog.evjang.com/2016/08/variational-bayes.html
