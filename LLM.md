@@ -1,3 +1,9 @@
+## Attention
+https://web.stanford.edu/class/cs224n/slides/cs224n-2023-lecture08-transformers.pdf
+We can think of attention as performing fuzzy lookup in a key-value store.
+In a lookup table, we have a table of keys that map to values. The query matches one of the keys, returning its value.
+In attention, the query matches all keys softly, to a weight between 0 and 1. The keys’ values are multiplied by the weights and summed.
+
 ## the impact of quantization
 
 4-bit quantization offers a trade-off between the LLMs’ capacity and the number of bits in the low-precision format. As the number of quantized bits decreases to 3 bits or lower, there is a noticeable performance discrepancy between the LLMs and their quantized counterparts. Experimental results suggest that when
