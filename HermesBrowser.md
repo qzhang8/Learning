@@ -101,4 +101,87 @@ graph LR
 
 In short: this is the **contract**; browser_registry.py is the **directory**; `tools.browser_tool` is the **consumer**.
 
+Updated todo list
+
+Searched for files matching `**/tools/browser_tool.py`, 1 match
+
+Read [](file:///home/qzhang8/hermes-agent/tools/browser_tool.py#1-1), lines 1 to 120
+
+This is a large file. Let me get an overview of its structure so I can show it meaningfully. 
+
+Ran terminal command:  wc -l tools/browser_tool.py && echo "---FUNCTIONS/CLASSES---" && grep -nE "^(def|class|async def) |^_[A-Z_]+ = |^# ---" tools/browser_tool.py | head -120
+
+Read [](file:///home/qzhang8/hermes-agent/tools/browser_tool.py#446-446), lines 446 to 597
+
+Here's an explanation of browser_tool.py — at ~3,900 lines, it's the **consumer** that ties the provider ABC and registry into the actual `browser_*` agent tools.
+
+### Purpose
+It implements the browser-automation tools the agent calls (`browser_navigate`, `browser_click`, etc.), driving the `agent-browser` CLI. It supports three backends transparently:
+- **Local Chromium** (default, zero-cost, headless — works on Linux servers)
+- **Browser Use** (cloud, default for Nous subscribers)
+- **Browserbase** (cloud, direct credentials)
+- Plus optional **Camofox** and **Lightpanda** engines
+
+### Structure by section
+
+**1. Imports & backward-compat shims (lines 1–115)**
+Notably it re-exports legacy names for callers that still import them from this module after the PR #25214 refactor moved providers into `plugins/browser/<vendor>/`:
+```python
+from agent.browser_provider import BrowserProvider as CloudBrowserProvider   # legacy alias
+from agent.browser_registry import get_provider as _registry_get_browser_provider
+from plugins.browser.browserbase.provider import BrowserbaseBrowserProvider as BrowserbaseProvider
+# ... browser_use, firecrawl
+```
+
+**2. PATH / environment discovery (119–200)**
+Helpers to locate `agent-browser`, `node`, `npx` in minimal-PATH environments (systemd, Termux, Homebrew).
+
+**3. Config resolvers (200–348)**
+Timeouts, vision/extraction models, CDP overrides, dialog policy.
+
+**4. Provider resolution (446–597)** — the bridge to your last two files:
+- `_get_cloud_provider()` reads `browser.cloud_provider` from config **once and caches it** for the process lifetime.
+  - Explicit `"local"` → disables cloud, returns `None`
+  - Explicit config → routes through `agent.browser_registry.get_provider()` (so third-party plugins participate); warns if the name is unregistered
+  - Otherwise → auto-detect: Browser Use → Browserbase (the `_LEGACY_PREFERENCE` walk)
+- `_ensure_browser_plugins_loaded()` idempotently triggers plugin discovery for code paths that skipped `model_tools`.
+- `_is_legacy_provider_registry_overridden()` detects test monkeypatches of `_PROVIDER_REGISTRY` and honors them.
+
+**5. Session lifecycle & cleanup (1063–1650)**
+Per-task session keys, PID ownership files, orphan reaping, a background cleanup thread, atexit/emergency teardown, local vs CDP session creation.
+
+**6. Command execution (1753–2290)**
+`_find_agent_browser()`, `_run_browser_command()` (the core subprocess runner with Lightpanda→Chrome fallback logic), plus content extraction/truncation helpers with LLM summarization.
+
+**7. Public agent tools (2291–3345)** — the actual model-facing surface:
+
+| Tool | Action |
+|------|--------|
+| `browser_navigate` | Go to a URL |
+| `browser_snapshot` | Accessibility-tree (ariaSnapshot) page text |
+| `browser_click` / `browser_type` | Interact via `@e1`-style refs |
+| `browser_scroll` / `browser_back` / `browser_press` | Navigation/input |
+| `browser_console` | Read/eval JS console |
+| `browser_get_images` | Extract page images |
+| `browser_vision` | LLM vision on a screenshot |
+
+**8. Requirements & cleanup (3347–3873)**
+`check_browser_requirements()`, Chromium install detection, Docker detection, screenshot/recording cleanup, and the schema map at the end (`_BROWSER_SCHEMA_MAP`).
+
+### How it fits together
+```mermaid
+graph LR
+    A[BrowserProvider ABC] -->|implemented in| B[plugins/browser/*]
+    B -->|register| C[browser_registry]
+    C -->|_get_cloud_provider| D[browser_tool.py]
+    D -->|drives| E[agent-browser CLI]
+    D -->|exposes browser_* tools| F[Agent]
+```
+
+### Notable design points
+- **Security-first**: fail-closed URL safety (`_is_safe_url` defaults to blocking if the safety module is unavailable), website-access policy checks, private-URL auto-local routing.
+- **Legacy-name preservation**: `bb_session_id`, `CloudBrowserProvider`, `is_configured()` all kept so the dispatcher stays a pure registry lookup with no per-provider branching.
+- **Robust cleanup**: multiple layers (thread worker, atexit, emergency, orphan reaper) so cloud sessions and local Chromium processes don't leak.
+
+Want me to open any specific section (e.g. `_run_browser_command`, the session cleanup, or one of the tool functions) in full?
 In short: **it's pure selection logic** — registering providers and picking the right one — with no capability routing (every browser provider implements the full lifecycle, so there's no search/extract/crawl split like the web subsystem has).
