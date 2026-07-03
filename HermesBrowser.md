@@ -1,5 +1,435 @@
 # Explore how the Hermes Agent interact with browser tool #
-## browser_registry.py ##
+## How Hermes Agent decides to invoke browser tool #
+
+
+
+Let me trace the decision flow — from tool registration through to how the agent picks `browser_navigate` (or any `browser_*` tool) at runtime.
+ 
+
+Searched for text `browser_navigate|browser_snapshot|browser_click` (`**/toolsets.py`), 5 results
+
+Searched for text `TOOLSETS|_HERMES_CORE_TOOLS` (`**/toolsets.py`), 67 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/toolsets.py#1-1), lines 1 to 100
+
+
+
+
+ 
+
+Searched for text `handle_function_call|browser_navigate` (`**/model_tools.py`), 8 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/model_tools.py#876-876), lines 876 to 950
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/model_tools.py#950-950), lines 950 to 1100
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/model_tools.py#1100-1100), lines 1100 to 1200
+
+
+
+Now let me check how the agent loop in run_agent.py actually invokes tools:
+ 
+
+Searched for text `tool_calls|handle_function_call` (`**/run_agent.py`), 48 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/run_agent.py#2090-2090), lines 2090 to 2160
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+Searched for regex `tool_calls_data` (`**/run_agent.py`), 4 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/run_agent.py#1600-1600), lines 1600 to 1680
+
+
+
+
+ 
+
+Searched for regex `response\.tool_calls|tool_calls:` (`**/run_agent.py`), 5 results
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+Searched for regex `handle_function_call` (`**/run_agent.py`), 1 result
+
+
+
+
+ 
+
+Searched for regex `tool_calls|handle_function_call` (`**/agent/conversation_loop.py`), 45 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/agent/conversation_loop.py#760-760), lines 760 to 820
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+Searched for regex `_run_tool|run_tool|execute.*tool` (`**/agent/conversation_loop.py`), 5 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/agent/conversation_loop.py#3900-3900), lines 3900 to 3980
+
+
+
+
+ 
+
+No matches found. Your search pattern might be excluded completely by either the search.exclude settings or .*ignore files.
+If you believe that it should have results, you can check into the .*ignore files and the exclude setting (here are some excluded patterns for reference:[**/node_modules,**/bower_components,**/*.code-search]).
+Then if you want to include those files you can call the tool again by setting "includeIgnoredFiles" to true.
+
+
+
+
+ 
+
+Searched for regex `def _execute_tool_calls` (`**/run_agent.py`), 3 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/run_agent.py#5104-5104), lines 5104 to 5200
+
+
+
+
+ 
+
+Searched for regex `def execute_tool_calls|handle_function_call` (`**/agent/tool_executor.py`), 10 results
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/agent/tool_executor.py#240-240), lines 240 to 380
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/agent/tool_executor.py#1200-1200), lines 1200 to 1310
+
+
+
+
+Now I have enough context to give a complete answer. Here's how Hermes Agent decides to invoke a browser tool:
+
+---
+
+## The Full Invocation Flow
+
+### 1. Tool Discovery & Registration (build time / startup)
+
+```
+plugins/browser/<vendor>/provider.py
+    ↓ registers via
+agent.browser_registry.register_provider(BrowserbaseBrowserProvider)
+agent.browser_registry.register_provider(BrowserUseBrowserProvider)
+agent.browser_registry.register_provider(FirecrawlBrowserProvider)
+    ↓
+tools/browser_tool.py imports those classes and exposes them as module-level
+names (BrowserbaseProvider, BrowserUseProvider, FirecrawlProvider) for
+backward compat with tests that monkeypatch this module directly.
+```
+
+The `browser_*` tool functions (`browser_navigate`, `browser_snapshot`, etc.) are **registered** into the global tool registry via registry.py at import time. Each tool's schema (name, description, parameters) is collected and stored.
+
+### 2. Toolset membership (what tools the agent is allowed to use)
+
+In toolsets.py, the `_HERMES_CORE_TOOLS` list includes all `browser_*` tools:
+```python
+"browser_navigate", "browser_snapshot", "browser_click",
+"browser_type", "browser_scroll", "browser_back",
+"browser_press", "browser_get_images",
+"browser_vision", "browser_console", "browser_cdp", "browser_dialog",
+```
+
+Every platform's toolset inherits this list. A session can be further scoped via `enabled_toolsets` / `disabled_toolsets` — the Tool Search bridge gates which tools are visible and callable in restricted sessions.
+
+### 3. The model decides to call a browser tool
+
+The LLM (Anthropic, OpenAI, etc.) receives a **system prompt** that lists all available tools in schema form. When it decides it needs to navigate to a URL, it emits a `browser_navigate` tool call in its response.
+
+### 4. The API response is received by the agent loop
+
+In run_agent.py / conversation_loop.py, the API response is processed. `assistant_message.tool_calls` is extracted:
+
+```python
+tool_calls = getattr(assistant_message, "tool_calls", None) or []
+# ↓ passed to:
+agent._execute_tool_calls(assistant_message, messages, effective_task_id, api_call_count)
+```
+
+### 5. Tool execution dispatch
+
+tool_executor.py handles the actual dispatch. Two paths exist:
+
+- **Sequential** (`_execute_tool_calls_sequential`): tools that may have side effects or share state run one at a time
+- **Concurrent** (`_execute_tool_calls_concurrent`): read-only tools can run in parallel
+
+For each `tool_call` in the batch:
+
+```python
+# 1. Parse arguments from JSON
+function_args = json.loads(tool_call.function.arguments)
+
+# 2. Tool Search bridge unwrap (if model used the bridge tool)
+if function_name == _ts.TOOL_CALL_NAME:
+    function_name = _underlying  # peel to real tool name
+
+# 3. Scope gate check — is this tool allowed in this session?
+if function_name not in _tool_search_scoped_names(agent):
+    block_result = {"error": "not available in this session"}
+
+# 4. Pre-tool-call plugin hooks (block directive)
+block_message = get_pre_tool_call_block_message(...)
+if block_message:
+    block_result = {"error": block_message}
+
+# 5. Guardrail check
+guardrail_decision = agent._tool_guardrails.before_call(function_name, function_args)
+if not guardrail_decision.allows_execution:
+    block_result = agent._guardrail_block_result(...)
+
+# 6. Actual dispatch via handle_function_call
+function_result = _ra().handle_function_call(
+    function_name,        # e.g. "browser_navigate"
+    function_args,        # {"url": "https://...", "task_id": "..."}
+    effective_task_id,
+    tool_call_id=tool_call.id,
+    ...
+)
+```
+
+### 6. `handle_function_call` in model_tools.py
+
+This is the central dispatcher that:
+
+1. **Coerces args** to schema-declared types (`"42"` → `42`)
+2. **Tool Search bridge dispatch** — handles `tool_search`, `tool_describe`, `tool_call` inline
+3. **Middleware** — applies `tool_request_middleware` (transforms args before dispatch)
+4. **Plugin block hooks** — `pre_tool_call` can block execution
+5. **ACP/Zed edit approval** — gates `write_file` / `patch`
+6. **Registry dispatch** — looks up the tool in the global registry and calls it
+
+```python
+# model_tools.py ~line 876
+def handle_function_call(function_name, function_args, ...):
+    # Coerce string args to declared types
+    function_args = coerce_tool_args(function_name, function_args)
+    
+    # Tool Search bridge...
+    
+    # Pre-tool-call plugin hooks (block)
+    block_message = get_pre_tool_call_block_message(...)
+    if block_message:
+        return json.dumps({"error": block_message}, ...)
+    
+    # ACP edit approval
+    edit_block_message = maybe_require_edit_approval(function_name, function_args)
+    if edit_block_message:
+        return edit_block_message
+    
+    # Dispatch via registry
+    result = registry.dispatch(
+        function_name, function_args,
+        task_id=task_id, session_id=session_id, user_task=user_task,
+    )
+    
+    # Post-tool-call plugin hooks
+    # transform_tool_result hooks...
+    return result
+```
+
+### 7. The registry resolves to the actual function
+
+registry.py holds the map of tool name → handler. For `browser_navigate`:
+
+```python
+registry.dispatch("browser_navigate", {"url": "https://...", "task_id": "..."}, ...)
+    ↓
+tools/browser_tool.browser_navigate(url="https://...", task_id="...")
+```
+
+### 8. Inside `browser_navigate` — the actual browser tool
+
+browser_tool.py `browser_navigate` function (~line 2291):
+
+1. **URL safety checks** — `is_safe_url`, website policy check
+2. **Session resolution** — `_get_session_info(task_id)` (creates a local or CDP session if needed)
+3. **Backend selection** — `_get_cloud_provider()` decides local vs Browser Use vs Browserbase:
+   - Explicit `"local"` in config → local Chromium only
+   - `browser.cloud_provider` set → uses that specific cloud provider
+   - Otherwise → auto-detect: Browser Use first, then Browserbase
+4. **Command construction** — builds the `agent-browser` CLI command with the right CDP URL, session ID, and browser flags
+5. **Subprocess execution** — `_run_browser_command()` runs the CLI, handles Lightpanda→Chrome fallback
+6. **Result extraction** — parses stdout, extracts screenshot path, returns text snapshot
+
+### 9. Result flows back
+
+```
+browser_navigate returns JSON string
+    ↓
+handle_function_call passes through transform_tool_result hooks
+    ↓
+tool_executor appends tool result message to messages list
+    ↓
+agent loop continues — next API call or final response to user
+```
+
+---
+
+## Summary Diagram
+
+```
+LLM decides: "I'll call browser_navigate"
+        ↓
+API response: { tool_calls: [{ function: { name: "browser_navigate", arguments: "{...}" } }] }
+        ↓
+run_agent._execute_tool_calls()
+        ↓
+tool_executor.execute_tool_calls_sequential / _concurrent
+  ├─ Parse args (JSON)
+  ├─ Tool Search bridge unwrap
+  ├─ Scope gate check (session toolset)
+  ├─ Plugin pre-tool-call hooks
+  ├─ Guardrail check
+  └─ handle_function_call("browser_navigate", {...})
+          ↓
+      model_tools.coerce_tool_args()      # type coercion
+      model_tools.handle_function_call()    # central dispatcher
+          ├─ tool_request middleware
+          ├─ plugin block check
+          ├─ ACP/Zed edit approval
+          └─ registry.dispatch()
+                  ↓
+              tools/registry.py
+                  ↓
+              tools/browser_tool.browser_navigate()
+                  ├─ URL safety checks
+                  ├─ _get_cloud_provider()  → Browser Use / Browserbase / local
+                  ├─ _get_session_info()   → CDP session
+                  ├─ _run_browser_command() → agent-browser CLI
+                  └─ returns text snapshot
+          ↓
+      transform_tool_result hooks
+          ↓
+      tool result appended to messages
+          ↓
+      agent loop continues
+```
+
+The key design properties:
+- **Layered gating** at every step (scope → plugin hooks → guardrails → edit approval)
+- **Cloud vs local resolved lazily** inside the tool, not at dispatch time
+- **Session isolation** per `task_id` with CDP sessions and cleanup threads
+- **Plugin-extensible** — new browser providers register themselves and participate in resolution automatically
+-
+- ## browser_registry.py ##
 Updated todo list
 
 The file browser_registry.py is a small, focused module that acts as the **central registry for cloud browser providers**. Here's a breakdown:
