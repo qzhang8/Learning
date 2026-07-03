@@ -210,49 +210,6 @@ The key design properties:
 - **Session isolation** per `task_id` with CDP sessions and cleanup threads
 - **Plugin-extensible** — new browser providers register themselves and participate in resolution automatically
 
-
-
- 
-
-Searched for files matching `**/plugins/browser/browserbase/provider.py`, 1 match
-
-Searched for files matching `**/plugins/browser/browser_use/provider.py`, 1 match
-
-Searched for files matching `**/plugins/browser/firecrawl/provider.py`, 1 match
-
-
-
-
- 
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#1-1), lines 1 to 100
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#1-1), lines 1 to 100
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/firecrawl/provider.py#1-1), lines 1 to 100
-
-
-
-
- 
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#100-100), lines 100 to 200
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#100-100), lines 100 to 200
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/firecrawl/provider.py#100-100), lines 100 to 172
-
-
-
-
- 
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#200-200), lines 200 to 298
-
-Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#200-200), lines 200 to 300
-
-
-
 ## Comparison of the Three Browser Providers
 
 All three implement the same `BrowserProvider` ABC contract, but differ in auth model, API endpoints, feature knobs, and — most importantly — **where they appear in the resolution order**.
