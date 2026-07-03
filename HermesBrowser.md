@@ -1,11 +1,6 @@
 # Explore how the Hermes Agent interact with browser tool #
 ## How Hermes Agent decides to invoke browser tool #
 
-
-
-reference:[**/node_modules,**/bower_components,**/*.code-search]).
-reference:[**/node_modules,**/bower_components,**/*.code-search]).
-
 ## The Full Invocation Flow
 
 ### 1. Tool Discovery & Registration (build time / startup)
