@@ -209,9 +209,213 @@ The key design properties:
 - **Cloud vs local resolved lazily** inside the tool, not at dispatch time
 - **Session isolation** per `task_id` with CDP sessions and cleanup threads
 - **Plugin-extensible** — new browser providers register themselves and participate in resolution automatically
--
-- ## browser_registry.py ##
-Updated todo list
+
+
+
+ 
+
+Searched for files matching `**/plugins/browser/browserbase/provider.py`, 1 match
+
+Searched for files matching `**/plugins/browser/browser_use/provider.py`, 1 match
+
+Searched for files matching `**/plugins/browser/firecrawl/provider.py`, 1 match
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#1-1), lines 1 to 100
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#1-1), lines 1 to 100
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/firecrawl/provider.py#1-1), lines 1 to 100
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#100-100), lines 100 to 200
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#100-100), lines 100 to 200
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/firecrawl/provider.py#100-100), lines 100 to 172
+
+
+
+
+ 
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browserbase/provider.py#200-200), lines 200 to 298
+
+Read [](file:///home/qzhang8/hermes-agent/plugins/browser/browser_use/provider.py#200-200), lines 200 to 300
+
+
+
+## Comparison of the Three Browser Providers
+
+All three implement the same `BrowserProvider` ABC contract, but differ in auth model, API endpoints, feature knobs, and — most importantly — **where they appear in the resolution order**.
+
+### Auth & Credential Model
+
+| Provider | Auth method | Env vars |
+|----------|-------------|----------|
+| **Browser Use** | Dual: direct API key OR managed Nous gateway (OAuth) | `BROWSER_USE_API_KEY` (direct) OR `tool_gateway.browser: gateway` (managed) |
+| **Browserbase** | Direct only — no managed gateway | `BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID` |
+| **Firecrawl** | Direct only | `FIRECRAWL_API_KEY` |
+
+**Browser Use** is the only one with a dual path: if `BROWSER_USE_API_KEY` is set AND `tool_gateway.browser` is not `"gateway"`, it uses direct auth. Otherwise it falls back to the managed Nous gateway (OAuth token resolved via `managed_tool_gateway`). Setting `tool_gateway.browser: gateway` flips the preference so managed billing wins even when the direct key is present.
+
+### API Endpoints
+
+| Provider | Create session | Close session | Base URL |
+|----------|---------------|---------------|----------|
+| **Browser Use** | `POST /browsers` | `PATCH /browsers/{id}` (action: stop) | `https://api.browser-use.com/api/v3` |
+| **Browserbase** | `POST /v1/sessions` | `POST /v1/sessions/{id}` (status: REQUEST_RELEASE) | `https://api.browserbase.com` |
+| **Firecrawl** | `POST /v2/browser` | `DELETE /v2/browser/{id}` | `https://api.firecrawl.dev` (or `FIRECRAWL_API_URL` override) |
+
+### Feature Knobs / Session Options
+
+| Feature | Browser Use | Browserbase | Firecrawl |
+|---------|-------------|-------------|-----------|
+| Proxies | Via managed gateway country code | `BROWSERBASE_PROXIES` env | ❌ |
+| Advanced stealth | ❌ | `BROWSERBASE_ADVANCED_STEALTH` | ❌ |
+| Keep-alive | ❌ | `BROWSERBASE_KEEP_ALIVE` | ❌ |
+| Custom timeout | ❌ | `BROWSERBASE_SESSION_TIMEOUT` (max 21600s) | `FIRECRAWL_BROWSER_TTL` (default 300s) |
+| Managed gateway billing | ✅ (via `external_call_id` header) | ❌ | ❌ |
+| Idempotency key for 409 retries | ✅ | ❌ | ❌ |
+
+### Resolution Order (from `browser_registry._LEGACY_PREFERENCE`)
+
+```python
+_LEGACY_PREFERENCE = ("browser-use", "browserbase")
+# Firecrawl is intentionally ABSENT from legacy auto-detect
+```
+
+1. **Browser Use checked first** — if `is_available()` returns True (direct key present OR managed gateway resolved), it's selected.
+2. **Browserbase checked second** — only if Browser Use is unavailable.
+3. **Firecrawl is never auto-selected** — requires explicit `browser.cloud_provider: "firecrawl"` in config. This is deliberate because `FIRECRAWL_API_KEY` is shared with the **web** Firecrawl plugin (firecrawl), and silently routing users to a paid cloud browser when they only set the key for web extraction would be wrong.
+
+### Session Metadata (all return the same shape)
+
+```python
+{
+    "session_name": str,   # unique name, e.g. "hermes_task123_abc12345"
+    "bb_session_id": str,   # provider's session ID (legacy key name preserved)
+    "cdp_url": str,        # CDP websocket URL
+    "features": dict,      # provider-specific flags
+    # Browser Use only:
+    "external_call_id": str  # managed gateway billing key
+}
+```
+
+### `is_available()` Implementation
+
+- **Browser Use**: checks `_get_config_or_none(refresh_token=False)` — tries direct key first (no OAuth refresh), then managed gateway. Import of `managed_tool_gateway` is deferred so direct-key users don't pay the weight of the Nous auth stack.
+- **Browserbase**: checks `_get_config_or_none()` — requires both `BROWSERBASE_API_KEY` AND `BROWSERBASE_PROJECT_ID`.
+- **Firecrawl**: checks `bool(os.environ.get("FIRECRAWL_API_KEY"))` — only the API key is required.
+
+### `get_setup_schema()` for `hermes tools` picker
+
+All three return a badge (`"paid"`), a tag line, and `post_setup: "agent_browser"`. Browserbase lists two env vars (`BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID`); Browser Use and Firecrawl each list one.
+
+### Key Design Takeaways
+
+- **Browser Use is the default** because it covers both self-billed direct users and managed-Nous subscription users.
+- **Browserbase is the fallback** for direct-credential users who didn't set up Browser Use.
+- **Firecrawl is opt-in only** — not in the legacy walk, intentionally isolated since its API key is shared with the web plugin.
+- **Browser Use is the only one with idempotency-key retry logic** for 409 "already in progress" responses from the managed gateway.
+
+
+All three are **direct auth only** — none of them use OAuth or a managed gateway token. Here's how each works:
+
+### Browser Use — Direct Auth
+
+```python
+# plugins/browser/browser_use/provider.py
+def _get_config_or_none(self, *, refresh_token: bool = True) -> Optional[Dict[str, Any]]:
+    api_key = os.environ.get("BROWSER_USE_API_KEY")
+    if api_key and not prefers_gateway("browser"):
+        return {
+            "api_key": api_key,
+            "base_url": _BASE_URL,
+            "managed_mode": False,
+        }
+    # ... managed path below
+```
+
+- Set `BROWSER_USE_API_KEY` env var → direct auth, `managed_mode: False`
+- The `prefers_gateway("browser")` check returns `False` unless user explicitly set `tool_gateway.browser: gateway` in config
+- No OAuth, no token refresh, no managed gateway involvement
+- `is_available()` returns `True` as long as the direct key is present
+
+### Browserbase — Direct Auth
+
+```python
+# plugins/browser/browserbase/provider.py
+def _get_config_or_none(self) -> Optional[Dict[str, Any]]:
+    api_key = os.environ.get("BROWSERBASE_API_KEY")
+    project_id = os.environ.get("BROWSERBASE_PROJECT_ID")
+    if api_key and project_id:
+        return {
+            "api_key": api_key,
+            "project_id": project_id,
+            "base_url": os.environ.get("BROWSERBASE_BASE_URL", "https://api.browserbase.com"),
+        }
+    return None
+```
+
+- Requires **both** `BROWSERBASE_API_KEY` AND `BROWSERBASE_PROJECT_ID` env vars
+- No managed gateway path exists at all — it's purely direct credentials
+- `is_available()` requires both vars to be set
+
+### Firecrawl — Direct Auth
+
+```python
+# plugins/browser/firecrawl/provider.py
+def is_available(self) -> bool:
+    return bool(os.environ.get("FIRECRAWL_API_KEY"))
+
+def _headers(self) -> Dict[str, str]:
+    api_key = os.environ.get("FIRECRAWL_API_KEY")
+    return {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
+```
+
+- Requires only `FIRECRAWL_API_KEY` env var
+- Bearer token auth via the `Authorization` header
+- No project ID, no managed gateway, no OAuth
+
+### Summary Table
+
+| Provider | Direct auth env var | Auth mechanism | Managed gateway? |
+|----------|---------------------|----------------|-------------------|
+| **Browser Use** | `BROWSER_USE_API_KEY` | API key in `X-Browser-Use-API-Key` header | ❌ No (but has its own managed path separate from this) |
+| **Browserbase** | `BROWSERBASE_API_KEY` + `BROWSERBASE_PROJECT_ID` | API key in `X-BB-API-Key` header + project ID in body | ❌ No |
+| **Firecrawl** | `FIRECRAWL_API_KEY` | Bearer token in `Authorization` header | ❌ No |
+
+### What "managed gateway" means for Browser Use specifically
+
+Browser Use is the only one of the three with a **second auth path** — the managed Nous gateway. This is **separate from direct auth**:
+
+```python
+# Browser Use has TWO paths:
+if api_key and not prefers_gateway("browser"):
+    # Path 1: Direct auth (self-billed)
+    return {"api_key": api_key, "base_url": ..., "managed_mode": False}
+else:
+    # Path 2: Managed gateway (Nous subscription billing)
+    managed = resolve_managed_tool_gateway("browser-use", ...)
+    return {"api_key": managed.nous_user_token, "base_url": managed.gateway_origin, "managed_mode": True}
+```
+
+But **direct auth** itself — the `BROWSER_USE_API_KEY` path — is just a plain API key header, no OAuth, no token refresh. Browserbase and Firecrawl don't have any managed gateway equivalent at all.
+
+## browser_registry.py ##
+
 
 The file browser_registry.py is a small, focused module that acts as the **central registry for cloud browser providers**. Here's a breakdown:
 
